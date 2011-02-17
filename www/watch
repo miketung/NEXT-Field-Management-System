@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>NEXT Field Management System</title>
+<link rel="stylesheet" type="text/css" href="default.css"></link>
+<script type="text/javascript" src="jquery-1.5.min.js"></script>
+</head>
+<body>
+<div id="header">
+<h3>NEXT Field Management System</h3>
+<ul id="menubar">
+<li><a href=".">Home</a></li>
+<li class="active" ><a id="watch_link" href="watch" >Watch</a></li>
+<li><a id="control_link" href="control" >Control</a></li>
+</ul>
+</div>
+
+<div class="container">
+
+<!--TODO:create boards for each game-->
+<style>
+.ayb_board {width:306px;height:306px;}
+.ayb_board div {width:100px;height:100px;float:left;border:solid 1px black;}
+</style>
+<div class="ayb_template" style="display:block;">
+<center>
+<h3>All Your Base</h3>
+<br />
+<div class="ayb_board">
+<div id="square1"></div>
+<div id="square2"></div>
+<div id="square3"></div>
+<div id="square4"></div>
+<div id="square5"></div>
+<div id="square6"></div>
+<div id="square7"></div>
+<div id="square8"></div>
+<div id="square9"></div>
+</div>
+<h3 id="ayb_won"></h3>
+</center>
+</div>
+
+</div>
+<script>
+//parse args ( id )
+jQuery.parseQuery = function(qs,options) {
+  var q = (typeof qs === 'string'?qs:window.location.search), o = {'f':function(v){return unescape(v).replace(/\+/g,' ');}}, options = (typeof qs === 'object' && typeof options === 'undefined')?qs:options, o = jQuery.extend({}, o, options), params = {};
+  jQuery.each(q.match(/^\??(.*)$/)[1].split('&'),function(i,p){
+    p = p.split('=');
+    p[1] = o.f(p[1]);
+    params[p[0]] = params[p[0]]?((params[p[0]] instanceof Array)?(params[p[0]].push(p[1]),params[p[0]]):[params[p[0]],p[1]]):p[1];
+  });
+  return params;
+}
+function renderAYB(data){
+  for(s in data){
+    if(s.indexOf('square')!=-1 && data[s]!=0)
+      $('#'+s).css('background', data[s]==1?'red':'blue'); 
+    if(s=='won' && data[s]!=0)
+      $('#ayb_won').html((data[s]==1?'Red':'blue') + ' won!');
+  }
+}
+var gameId = $.parseQuery().id;
+var REDRAW_INTERVAL = 250;
+function redraw(){
+  jQuery.getJSON('fms/state?id='+gameId+'&callback=?', function(data){
+    renderAYB(data); 
+    setTimeout(redraw, REDRAW_INTERVAL);  
+  });
+}
+if(gameId){
+  redraw();
+  $('#watch_link').attr('href', 'watch?id='+gameId);
+  $('#control_link').attr('href', 'control?id='+gameId);
+}
+</script>
+</body>
+</html>

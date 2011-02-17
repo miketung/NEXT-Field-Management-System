@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Documentation</title>
+<link rel="stylesheet" type="text/css" href="default.css"></link>
+</head>
+<body>
+<div class="container">
+<h2>NEXT Field Management System Documentation</h2>
+<h2>Definitions</h2>
+<p>The Field Management System is in-memory, real-time capable, management system of the game state and field elements.
+</p>
+<p>
+A game state is a fixed-length tuple of real numbers representing both sensor values and game concepts.
+</p>
+<p>
+A game is specified by determining:
+<br />
+<ol>
+  <li>the form of the finite game state, as a list of variable names</li>
+  <li>a rule for updating the game state, given sensor values</li>
+  <li>an initial state vector</li>
+</ol>
+<p>These items have been defined for All Your Base, FIRST Flight, and The Best Trajectory. New games can easiliy be added.</p>
+<h2>API</h2>
+<pre>
+create?game=...
+  -create a new match(instance of a game) 
+list
+  -list matches
+state?id=...
+  -query current state of a match
+update?id=...&state1=val1..
+  -update state information in a current match
+log?id=...
+  -view log of state updates for a given match
+</pre>
+<h2>Installation Instructions</h2>
+<p>
+Everything runs out of a folder. Run:
+<pre>java fms.Start</pre>
+Default port binds to 80. Requires no external database or web server.
+</p>
+<h2>Development Plan</h2>
+Version 1 - APIs above implemented. Playable game. Sensor updates via web form/app/device.
+<br />
+Version 2 - Team permissions model
+<br />
+Version 3 (time permitting) - Graphical display of game watchable in real-time.
+</div>
+</body>
+</html>

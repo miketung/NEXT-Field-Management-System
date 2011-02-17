@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>NEXT Field Management System</title>
+<link rel="stylesheet" type="text/css" href="default.css"></link>
+<script type="text/javascript" src="jquery-1.5.min.js"></script>
+</head>
+<body>
+<div id="header">
+<h3>NEXT Field Management System</h3>
+<ul id="menubar">
+<li class="active" ><a href=".">Home</a></li>
+<li><a href="watch">Watch</a></li>
+<li><a href="control">Control</a></li>
+</ul>
+</div>
+
+<div class="container"> 
+<h2>New Match</h2> 
+<br /> 
+<form name="create" class="create" action="fms/create" method="POST">
+<select name="game" >
+<option value="1">FIRST Flight</option>
+<option value="2" selected >All Your Base</option>
+<option value="3">The Best Trajectory</option>
+</select>
+<input type="Submit" value="Create"></input>
+</form>
+<br />
+<h2>List of Matches</h2>
+<div id="matches"></div>
+</div>
+
+<script>
+function showMatches(){
+$.getJSON("fms/list?callback=?", function(data){
+  var matchesDiv = $("#matches").empty();
+  var t = $("<table>");
+  t.append("<tr class='thead' ><td>id</td><td>game</td><td>start</td><td>end</td></tr>");
+  matchesDiv.append(t);
+  for(i in data.matches){
+    var e = data.matches[i];
+    var tr = $("<tr>");
+    tr.append("<td>"+e.id+"</td>");
+    tr.append("<td>"+e.game+"</td>");
+    tr.append("<td>"+new Date((e.start || 0))+"</td>");
+    tr.append("<td>"+new Date((e.end || 0))+"</td>");
+    tr.append("<td><a href='watch?id="+e.id+"'>watch</a></td>");
+    tr.append("<td><a href='control?id="+e.id+"'>control</a></td>");
+    t.append(tr);
+  }
+});
+}
+showMatches();
+$("form.create").submit(function(){
+  jQuery.ajax({type:'POST', url:jQuery(this).attr("action"), data:jQuery(this).serialize()});
+  setTimeout(showMatches, 500);
+  return false;
+});
+</script>
+</body>
+</html>

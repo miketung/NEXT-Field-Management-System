@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>NEXT Field Management System</title>
+<link rel="stylesheet" type="text/css" href="default.css"></link>
+<script type="text/javascript" src="jquery-1.5.min.js"></script>
+</head>
+<body>
+<div id="header">
+<h3>NEXT Field Management System</h3>
+<ul id="menubar">
+<li><a href=".">Home</a></li>
+<li><a id="watch_link" href="watch" >Watch</a></li>
+<li class="active" ><a id="control_link" href="control" >Control</a></li>
+</ul>
+</div>
+
+<div class="container">
+<h2>Field Control</h2>
+<small>Interface for updating game state.</small>
+<br /><br />
+<form method="POST" action="fms/update">
+<table>
+<tr><td>Name</td><td>Value</td></tr>
+<tr>
+<td>
+  <select id="name" name="name" >
+    <option>sensor1</option>
+    <option>sensor2</option>
+    <option>sensor3</option>
+    <option>sensor4</option>
+    <option>sensor5</option>
+    <option>sensor6</option>
+    <option>sensor7</option>
+    <option>sensor8</option>
+    <option>sensor9</option>
+  </select>
+</td>
+<td><input type="text" id="value" name="value" value="0" ></input></td>
+<td><input type="submit" value="Update"></input></td>
+</tr>
+</table>
+</form>
+</div>
+<script>
+jQuery.parseQuery = function(qs,options) {
+  var q = (typeof qs === 'string'?qs:window.location.search), o = {'f':function(v){return unescape(v).replace(/\+/g,' ');}}, options = (typeof qs === 'object' && typeof options === 'undefined')?qs:options, o = jQuery.extend({}, o, options), params = {};
+  jQuery.each(q.match(/^\??(.*)$/)[1].split('&'),function(i,p){
+    p = p.split('=');
+    p[1] = o.f(p[1]);
+    params[p[0]] = params[p[0]]?((params[p[0]] instanceof Array)?(params[p[0]].push(p[1]),params[p[0]]):[params[p[0]],p[1]]):p[1];
+  });
+  return params;
+}
+var gameId = $.parseQuery().id;
+$("form").submit(function(){
+  var arg = "id="+gameId+"&"+jQuery('#name').get(0).value+"="+jQuery('#value').get(0).value;
+  jQuery.ajax({method:'POST', url:jQuery('form').attr('action'), data:arg});
+  return false;
+});
+if(gameId){
+  $('#watch_link').attr('href', 'watch?id='+gameId);
+  $('#control_link').attr('href', 'control?id='+gameId);
+}
+</script>
+</body>
+</html>
