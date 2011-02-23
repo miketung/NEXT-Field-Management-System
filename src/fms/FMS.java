@@ -121,10 +121,11 @@ public class FMS implements HttpRequestHandler {
             
             //assume game is AYB
             //TODO: use game to spawn state
-            GameState newState = new AYB().transition(state, new SensorData(args));
+            SensorData sensor = new SensorData(args);
+            GameState newState = new AYB().transition(state, sensor);
             games.put(gameId, newState);
             //log result
-            new Log(gameId).update(args);
+            new Log(gameId).update(sensor);
         }else if("log".equals(method)){
             int gameId = Integer.parseInt(args.remove("id"));
             //read log

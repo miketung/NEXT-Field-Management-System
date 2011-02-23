@@ -5,9 +5,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Map;
+import java.net.URLDecoder;
 
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 /**
  * The log format is:
@@ -22,10 +23,12 @@ public class Log {
     
     public Log(int gameId){ this.gameId = gameId; }
     
-    public void update(Map<String, String> updatedStates){
+    public void update(SensorData updatedStates){
         File log = new File("logs/"+gameId+".txt");
         try{
             FileWriter fw = new FileWriter(log, true);
+            fw.write(System.currentTimeMillis()+":"+updatedStates.toString()+"\n");
+            fw.flush();
         }catch(IOException ioe){
             ioe.printStackTrace();
         }
@@ -38,9 +41,23 @@ public class Log {
         try
         {
             BufferedReader br = new BufferedReader(new FileReader(log));
-            String line = br.readLine();
-            
-            
+            String line;
+            while((line = br.readLine())!=null){
+                int a = line.indexOf(':');
+                if(a!=-1){
+                    long timestamp = Long.parseLong(line.substring(0, a).trim());
+                    JSONObject b = new JSONObject();
+                    b.put("time", timestamp);
+                    for(String c : line.substring(a+1).trim().split("&")){
+                        String[] d = c.split("=");
+                        if(d.length==2){
+                            b.put(URLDecoder.decode(d[0], "utf-8"), URLDecoder.decode(d[1], "utf-8"));
+                        }
+                    }
+                    out.add(b);
+                }
+            }
+            br.close();
         }catch(IOException ioe){
             ioe.printStackTrace();
             return out;
